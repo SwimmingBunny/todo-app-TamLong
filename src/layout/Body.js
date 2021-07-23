@@ -1,5 +1,5 @@
 import React from "react";
-import { DatePicker, Button, message, Input } from "antd";
+import { DatePicker, Button, message, Input, Pagination } from "antd";
 import "antd/dist/antd.css";
 // ReactDOM.render(<DatePicker />, mountNode);
 import Todoitem from "../component/Todoitem";
@@ -19,6 +19,10 @@ const Body = () => {
   const [editingItem, setEditingItem] = React.useState(-1);
   const [hanleDone, setHandleDone] = React.useState("");
   const STATUS = { DONE: "done", ALL: "all", UNDONE: "undone" };
+
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const PAGE_SIZE = 8;
+
   const handleChange = (value) => {
     message.info(
       `Selected Date: ${value ? value.format("YYYY-MM-DD") : "None"}`
@@ -45,6 +49,8 @@ const Body = () => {
             return true;
         }
       })
+      .splice((currentPage - 1) * PAGE_SIZE)
+      .splice(0, PAGE_SIZE)
       .map((item, index) => {
         return (
           <Todoitem
@@ -75,6 +81,7 @@ const Body = () => {
           />
         );
       });
+  console.log((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
   const handleListData = () => {
     if (value === "") {
       alert("Please add task");
@@ -104,6 +111,7 @@ const Body = () => {
       listItem.splice(c, 1);
       localStorage.setItem(taskList, JSON.stringify(listItem));
       setListItem([...listItem]);
+      setCurrentPage(0);
     }
   };
   const handleClearData = () => {
@@ -153,7 +161,6 @@ const Body = () => {
           </div>
         </div>
       </div>
-
       <div className="body__task">
         <Input
           className="body__input"
@@ -195,9 +202,16 @@ const Body = () => {
           </Button>
         </div>
       </div>
-
-      <div></div>
       <div className="body__list">{showData()}</div>
+      <Pagination
+        pageSize={PAGE_SIZE}
+        current={currentPage}
+        total={listItem.length}
+        onChange={(page) => {
+          setCurrentPage(page);
+        }}
+      />
+      ;
     </>
   );
 };

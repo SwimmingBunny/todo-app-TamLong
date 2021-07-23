@@ -116,3 +116,6 @@
 .undone {
   margin: 0 10px;
 }
+.body__list {
+  min-height: 300px;
+}
